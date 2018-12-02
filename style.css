@@ -40,6 +40,7 @@
 
 .board {
 	width: calc(var(--cell-size) * 9);
+	cursor: crosshair;
 }
 
 .row {
