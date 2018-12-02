@@ -4,31 +4,40 @@
 let board;
 
 var data = "060084070900201080000070261006000500590120400038500126010043700000000003800050002";
+var solution = "";
 
 var cols = [];
 var rows = [];
 var bigCells = [];
 var cells = [];
+var boardHistory = [];
 
+var hideInvalid = false;
+
+function toggleInvalidDisplay() {
+	hideInvalid = !hideInvalid;
+	document.documentElement.style.setProperty("--invalid-opacity", hideInvalid? 0: 1);
+}
 
 function cellHideNumber(number) {
 	if (!number) {
 		return;
 	}
 	let helper = byId(this.id + "_" + (number - 1));
-	helper.style.opacity = 0;
+	helper.classList.add("invalid");
+	// helper.style.opacity = 0;
 }
 
 function cellSetNumber(number) {
 	if (!number) {
-		return;
+		return false;
 	}
 
 	let illegalOperation = false;
 	for (let section of this.sections) {
 		for (let cell of section) {
 			if (cell.innerText == number) {
-				return;
+				return false;
 			}
 		}
 	}
@@ -38,10 +47,39 @@ function cellSetNumber(number) {
 	this.style.visibility = "";
 	this.innerHTML = number;
 	this.helpers.style.visibility = "hidden";
+	if (number != Number(solution[this.id])) {
+		this.classList.add("wrong");
+	}
+	return true;
 }
 
-function helperClick() {
-	this.cell.setNumber(Number(this.innerText));
+function cellClear(persistMarkers) {
+	this.innerHTML = 0;
+	this.style.visibility = "hidden";
+	this.helpers.style.visibility = "";
+	this.classList.remove("solution");
+	this.classList.remove("wrong");
+	for (let i = 0; i < 9; ++i) {
+		let helper = byId(this.id + "_" + i);
+		// helper.style.opacity = 1;
+		helper.classList.remove("invalid");
+		if (!persistMarkers) {
+			helper.classList.remove("marked");
+		}
+	}
+}
+
+function helperClick(event) {
+	let hist = serialize();
+	if (this.cell.setNumber(Number(this.innerText))) {
+		boardHistory.push(hist);
+	}
+}
+
+function helperRightClick(event) {
+	event.preventDefault();
+	this.classList.toggle("marked");
+	return false;
 }
 
 
@@ -87,7 +125,6 @@ function createBoard() {
 		let cell = byId(cellId);
 		cell.x = x;
 		cell.y = y;
-		cells.push(cell);
 		cols[x].push(cell);
 		rows[y].push(cell);
 
@@ -100,32 +137,75 @@ function createBoard() {
 		cell.setNumber = cellSetNumber;
 		cell.hideNumber = cellHideNumber;
 		cell.helpers = byId("helper" + cellId);
+		cell.clear = cellClear;
 		cell.style.visibility = "hidden";
 
 		for (let i = 0; i < 9; ++i) {
 			let helper = byId(cellId + "_" + i);
 			helper.cell = cell;
 			helper.addEventListener("click", helperClick);
+			helper.addEventListener("contextmenu", helperRightClick);
 		}
+	}
+
+	for (let i = 0; i < 81; ++i) {
+		cells.push(byId(i));
 	}
 
 	return board;
 }
 
-function loadBoard(data) {
+function loadBoard(data, preserveData) {
+	clearBoard(Boolean(preserveData));
+	data = data.trim();
+	if (data.length != 81) {
+		throw "data has wrong length";
+	}
+	if (!preserveData) {
+		boardHistory = [data];
+	}
 	for (let i = 0; i < 81; ++i) {
 		let c = data[i];
 		let element = byId(i);
-		element.innerText = c;
 		let number = Number(c);
-		if (c != "0") {
-			byId("helper" + i).style.visibility = "hidden";
-		}
-		else {
-			element.style.visibility = "hidden";
-		}
 		if (number) {
 			element.setNumber(Number(number));
+		}
+	}
+}
+
+function serialize() {
+	let output = "";
+	cells.forEach(cell => output += Number(cell.innerText));
+	return output;
+}
+
+function clearBoard(preserveMarkers) {
+	cells.forEach(cell => cell.clear(Boolean(preserveMarkers)));
+}
+
+function undo() {
+	if (boardHistory.length > 1) {
+		loadBoard(boardHistory.pop(), true);
+	}
+}
+
+function solve() {
+	boardHistory.push(serialize());
+	for (let cell of cells) {
+		let value = Number(cell.innerText);
+		let rightValue = Number(solution[cell.id]);
+		if (value == 0) {
+			cell.innerText = solution[cell.id];
+			cell.classList.add("solution");
+			cell.style.visibility = "";
+			cell.helpers.style.visibility = "hidden";
+		}
+		else if (value != rightValue) {
+			cell.innerText = cell.innerText + "(" + solution[cell.id] + ")";
+			cell.classList.add("wrong");
+			cell.style.visibility = "";
+			cell.helpers.style.visibility = "hidden";
 		}
 	}
 }
@@ -133,6 +213,14 @@ function loadBoard(data) {
 function init() {
 	board = byId("board");
 	createBoard();
-	loadBoard(data);
+
+	//loadBoard(data);
+
+	get("generate.php", function(data) {
+		data = data.trim().split("\n").filter(x => x.length > 0);
+		solution = data[0];
+		console.log();
+		loadBoard(data[data.length - 1]);
+	});
 }
 

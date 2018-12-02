@@ -1,6 +1,7 @@
 
 :root {
 	--cell-size: 64px;
+	--invalid-opacity: 1;
 }
 
 .cell {
@@ -9,18 +10,24 @@
 	line-height: var(--cell-size);
 	height: var(--cell-size);
 	text-align: center;
-	outline: 1px solid black;
+	outline: 1px solid rgba(0,0,0,.3);
 	font-family: Arial, Helvetica, sans-serif;
 	transition: opacity 1s;
+	transition: visibility 1s;
+}
+
+
+.number.solution {
+	color: blue;
+}
+
+.number.wrong {
+	color: red;
+	font-size: calc(var(--cell-size) / 2);
 }
 
 .number {
-	font-size: 64px;
-}
-
-.cell:hover {
-	background: rgba(0,0,255, .1);
-	transition: background 1s;
+	font-size: calc(var(--cell-size) * .75);
 }
 
 .bigcell {
@@ -49,8 +56,25 @@
 }
 
 .helper {
-	font-size: 10px;
+	font-size: calc(var(--cell-size) / 4);
 	line-height: calc(var(--cell-size) / 3);
 	width: calc(var(--cell-size) / 3);
 	transition: opacity 1s;
+	border-radius: 50%;
+	color: rgba(0,0,0,.5);
+	opacity: 1;
+}
+
+.helper.marked {
+	background: rgba(0, 255, 0, .5);
+	border-radius: 50%;
+	color: black;
+}
+
+.helper.invalid {
+	opacity: var(--invalid-opacity);
+}
+
+.helper: hover {
+	background: rgba(0,0,255, .2);
 }
