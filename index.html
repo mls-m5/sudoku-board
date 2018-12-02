@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sudoku</title>
+	<meta charset="utf-8">
+	<script src="mutils/require.js" id="requireScript"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div id="board" class="board"/>
+
+
+	<script id="script">
+	require(["main.js", "mutils/get.js", "mutils/utils.js", "mutils/mustache.js", "mutils/utils.js"], function() {
+		init();
+		let script = byId("script");
+		// script.parentElement.removeChild(script);
+
+		let rs = byId("requireScript");
+		rs.parentElement.removeChild(rs);
+	}, true);
+	</script>
+
+	<script type="text/template" id="bigCellTemplate">
+		<div class="bigcell">
+			{content}
+		</div>
+	</script>
+	<script type="text/template" id="cellTemplate">
+		<div class="cell">
+			{helper}
+			<span id="{id}">{number}</span>
+		</div>
+	</script>
+	<script type="text/template" id="rowTemplate">
+		<div class="row" id="row{id}">
+			{content}
+		</div>
+	</script>
+	<script type="text/template" id="helperTemplate">
+		<div class="helper" id="{cell}_{id}">
+			{content}
+		</div>
+	</script>
+	<script type="text/template" id="helperContainerTemplate">
+		<div class="helperContainer" id="helper{cell}">
+			{content}
+		</div>
+	</script>
+</body>
+</html>

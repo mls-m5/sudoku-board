@@ -1,0 +1,46 @@
+
+:root {
+	--cell-size: 64px;
+}
+
+.cell {
+	width: var(--cell-size);
+	height: var(--cell-size);
+	line-height: var(--cell-size);
+	height: var(--cell-size);
+	text-align: center;
+	outline: 1px solid black;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.cell:hover {
+	background: rgba(0,0,255, .1);
+	transition: background 1s;
+}
+
+.bigcell {
+	outline: 2px solid black;
+	width: calc(var(--cell-size) * 3);
+	height: calc(var(--cell-size) * 3);
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+}
+
+.board {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	width: calc(var(--cell-size) * 9);
+	border: 1px solid gray;
+}
+
+.helperContainer {
+	position: absolute;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+}
+
+.helper {
+	font-size: 10px;
+	line-height: calc(var(--cell-size) / 3);
+	width: calc(var(--cell-size) / 3);
+}
