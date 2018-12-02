@@ -190,8 +190,18 @@ function undo() {
 	}
 }
 
+function retry() {
+	loadBoard(boardHistory[0]);
+}
+
 function solve() {
-	boardHistory.push(serialize());
+	let histData = serialize();
+	if (histData.length == 81) {
+		boardHistory.push(histData);
+	}
+	else {
+		return; //Something is wrong with the values
+	}
 	for (let cell of cells) {
 		let value = Number(cell.innerText);
 		let rightValue = Number(solution[cell.id]);
@@ -210,17 +220,20 @@ function solve() {
 	}
 }
 
-function init() {
-	board = byId("board");
-	createBoard();
-
-	//loadBoard(data);
-
+function newBoard() {
 	get("generate.php", function(data) {
 		data = data.trim().split("\n").filter(x => x.length > 0);
 		solution = data[0];
 		console.log();
 		loadBoard(data[data.length - 1]);
-	});
+	});	
+}
+
+
+function init() {
+	board = byId("board");
+	createBoard();
+
+	newBoard();
 }
 
