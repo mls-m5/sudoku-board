@@ -7,20 +7,33 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<button onclick="toggleInvalidDisplay()">show/hide invalid</button>
-	<button onclick="solve()">show solution</button>
-	<button onclick="undo()">undo</button>
-	<button onclick="retry()">retry</button>
-	<button onclick="newBoard()">new board</button>
-	<div id="board" class="board"/>
+	<div class="container">
+		<button onclick="toggleInvalidDisplay()">show/hide invalid</button>
+		<button onclick="solve()">show solution</button>
+		<button onclick="undo()">undo</button>
+		<button onclick="retry()">retry</button>
+		<button onclick="newBoard()">new board</button>
+		<div id="board" class="board"></div>
+
+		<div id="remainingNumbers">
+			<div class="remainder" id="r0">1</div>
+			<div class="remainder" id="r1">2</div>
+			<div class="remainder" id="r2">3</div>
+			<div class="remainder" id="r3">4</div>
+			<div class="remainder" id="r4">5</div>
+			<div class="remainder" id="r5">6</div>
+			<div class="remainder" id="r6">7</div>
+			<div class="remainder" id="r7">8</div>
+			<div class="remainder" id="r8">9</div>
+		</div>
+	</div>
 
 
-	<script id="script">
+	<script id="mainScript">
 	require(["main.js", "mutils/get.js", "mutils/utils.js", "mutils/mustache.js", "mutils/utils.js"], function() {
 		init();
-		let script = byId("script");
-		// script.parentElement.removeChild(script);
-
+		let s = byId("mainScript");
+		s.parentElement.removeChild(s);
 		let rs = byId("requireScript");
 		rs.parentElement.removeChild(rs);
 	}, true);

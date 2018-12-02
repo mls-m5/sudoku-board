@@ -2,6 +2,7 @@
 :root {
 	--cell-size: 64px;
 	--invalid-opacity: 1;
+	--font: Arial, Helvetica, sans-serif;
 }
 
 .cell {
@@ -11,7 +12,7 @@
 	height: var(--cell-size);
 	text-align: center;
 	outline: 1px solid rgba(0,0,0,.3);
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: var(--font); 
 	transition: opacity 1s;
 	transition: visibility 1s;
 }
@@ -41,6 +42,21 @@
 .board {
 	width: calc(var(--cell-size) * 9);
 	cursor: crosshair;
+}
+
+#remainingNumbers {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	width: calc(var(--cell-size) * 4);
+	margin-top: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	font-family: var(--font);
+}
+
+.remainder {
+	text-align: center;
+	font-size: calc(var(--cell-size)  / 3);
 }
 
 .row {
@@ -78,4 +94,10 @@
 
 .helper: hover {
 	background: rgba(0,0,255, .2);
+}
+
+.container {
+	width: calc(var(--cell-size) * 9);
+	margin-left: auto;
+	margin-right: auto;
 }

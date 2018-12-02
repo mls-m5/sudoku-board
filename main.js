@@ -37,7 +37,9 @@ function cellSetNumber(number) {
 	for (let section of this.sections) {
 		for (let cell of section) {
 			if (cell.innerText == number) {
-				return false;
+				this.classList.add("wrong");
+				//return false;
+				break;
 			}
 		}
 	}
@@ -73,6 +75,7 @@ function helperClick(event) {
 	let hist = serialize();
 	if (this.cell.setNumber(Number(this.innerText))) {
 		boardHistory.push(hist);
+		updateRemainder();
 	}
 }
 
@@ -172,6 +175,7 @@ function loadBoard(data, preserveData) {
 			element.setNumber(Number(number));
 		}
 	}
+	updateRemainder();
 }
 
 function serialize() {
@@ -187,6 +191,7 @@ function clearBoard(preserveMarkers) {
 function undo() {
 	if (boardHistory.length > 1) {
 		loadBoard(boardHistory.pop(), true);
+		updateRemainder();
 	}
 }
 
@@ -216,6 +221,32 @@ function solve() {
 			cell.classList.add("wrong");
 			cell.style.visibility = "";
 			cell.helpers.style.visibility = "hidden";
+		}
+	}
+}
+
+function updateRemainder() {
+	for (let i = 0; i < 9; ++i) {
+		let number = i + 1;
+		let found = true;
+		for (let bc of bigCells) {
+			let foundLocal = false;
+			bc.forEach(function(cell) {
+				if (cell.innerHTML == number) {
+					foundLocal = true;
+				}
+			});
+			if (!foundLocal) {
+				found = false;
+				break;
+			}
+		}
+		let remainderElement = byId("r" + i);
+		if (found) {
+			remainderElement.style["text-decoration"] = "line-through";
+		}
+		else {
+			remainderElement.style["text-decoration"] = "";
 		}
 	}
 }
